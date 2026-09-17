@@ -79,7 +79,12 @@ Enjoy building the future of decentralized microservices! 🐾✨
 
 ---
 
-## 📜 Credits & Ownership
+## 📜 Credits, Ownership & Licensing
 
 * **Authors**: Antigravity & [ChloeYuki](https://github.com/chloeyuki)
 * **Software Ownership**: [ChloeYuki](https://github.com/chloeyuki)
+
+### Dual-License Strategy
+To protect the ecosystem while maximizing developer adoption, Aireya uses a dual-license model:
+* **The SDKs & Generated Code**: Licensed under the **[MIT License](LICENSE-SDK)**. You can freely use, integrate, and compile the Aireya client SDKs into your proprietary, closed-source commercial applications without any restrictions.
+* **The Core Engine, ANA & Waypoint**: Licensed under the **[AGPL-3.0 License](LICENSE)**. If you modify the core infrastructure or provide the Aireya network components as a managed cloud service, you must open-source your modifications.
