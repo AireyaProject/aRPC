@@ -1,2 +1,0 @@
-/usr/bin/ar qc libaireya_core.a CMakeFiles/aireya_core.dir/src/wire_format.cc.o CMakeFiles/aireya_core.dir/src/frame.cc.o CMakeFiles/aireya_core.dir/src/server.cc.o CMakeFiles/aireya_core.dir/src/quic_server.cc.o CMakeFiles/aireya_core.dir/src/resolver.cc.o CMakeFiles/aireya_core.dir/src/crypto.cc.o
-/usr/bin/ranlib libaireya_core.a
