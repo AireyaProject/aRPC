@@ -1,0 +1,17 @@
+namespace aireya.example;
+
+enum Status {
+    ACTIVE = 1;
+    INACTIVE = 2;
+}
+
+struct User {
+    1: int64 id;
+    2: string name;
+    3: list<string> tags;
+}
+
+service UserService {
+    rpc GetUser(User) -> (User);
+    rpc StreamUsers(User) -> stream(User);
+}

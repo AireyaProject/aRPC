@@ -1,0 +1,4 @@
+/home/chloelilymu/Aireya-RPC/core/cpp/build/CMakeFiles/aireya_core.dir
+/home/chloelilymu/Aireya-RPC/core/cpp/build/CMakeFiles/aireya_server.dir
+/home/chloelilymu/Aireya-RPC/core/cpp/build/CMakeFiles/edit_cache.dir
+/home/chloelilymu/Aireya-RPC/core/cpp/build/CMakeFiles/rebuild_cache.dir
