@@ -191,13 +191,15 @@ func (g *Generator) generateServices() {
 			respArg := fmt.Sprintf("%s* resp", rpc.RespType)
 			
 			g.buf.WriteString(fmt.Sprintf("    int %s(%s, %s) {\n", rpc.Name, reqArg, respArg))
-			g.buf.WriteString("        (void)resp; // Suppress unused warning for skeleton\n")
 			g.buf.WriteString("        ::aireya::Frame frame;\n")
 			g.buf.WriteString("        frame.type = ::aireya::FrameType::REQUEST;\n")
 			g.buf.WriteString(fmt.Sprintf("        frame.metadata[\"rpc\"] = \"%s.%s\";\n", s.Name, rpc.Name))
 			g.buf.WriteString("        req.SerializeToArray(frame.payload);\n")
 			g.buf.WriteString("        conn_->SendFrame(frame);\n")
-			g.buf.WriteString("        // TODO: Wait for response matching StreamID asynchronously\n")
+			g.buf.WriteString("        // Block until response frame arrives for this StreamID\n")
+			g.buf.WriteString("        ::aireya::Frame resp_frame = conn_->RecvFrame(frame.stream_id);\n")
+			g.buf.WriteString("        if (resp_frame.type == ::aireya::FrameType::ERROR) { return -1; }\n")
+			g.buf.WriteString("        resp->ParseFromArray(resp_frame.payload.data(), resp_frame.payload.size());\n")
 			g.buf.WriteString("        return 0;\n")
 			g.buf.WriteString("    }\n\n")
 		}

@@ -2,7 +2,57 @@
 #![allow(unused_imports)]
 #![allow(dead_code)]
 
-#[derive(Debug, Clone)]
+mod aireya_wire {
+    pub fn encode_varint(buf: &mut Vec<u8>, mut val: u64) {
+        loop {
+            let byte = (val & 0x7F) as u8;
+            val >>= 7;
+            if val == 0 {
+                buf.push(byte);
+                return;
+            }
+            buf.push(byte | 0x80);
+        }
+    }
+
+    pub fn decode_varint(buf: &[u8], pos: &mut usize) -> u64 {
+        let mut result: u64 = 0;
+        let mut shift = 0;
+        loop {
+            if *pos >= buf.len() { break; }
+            let byte = buf[*pos];
+            *pos += 1;
+            result |= ((byte & 0x7F) as u64) << shift;
+            if byte & 0x80 == 0 { break; }
+            shift += 7;
+        }
+        result
+    }
+
+    pub fn encode_tag(buf: &mut Vec<u8>, field_num: u32, wire_type: u8) {
+        encode_varint(buf, ((field_num as u64) << 3) | (wire_type as u64));
+    }
+
+    pub fn decode_tag(buf: &[u8], pos: &mut usize) -> (u32, u8) {
+        let tag = decode_varint(buf, pos);
+        ((tag >> 3) as u32, (tag & 0x07) as u8)
+    }
+
+    pub fn encode_bytes(buf: &mut Vec<u8>, field_num: u32, data: &[u8]) {
+        encode_tag(buf, field_num, 2);
+        encode_varint(buf, data.len() as u64);
+        buf.extend_from_slice(data);
+    }
+
+    pub fn decode_bytes(buf: &[u8], pos: &mut usize) -> Vec<u8> {
+        let len = decode_varint(buf, pos) as usize;
+        let data = buf[*pos..*pos + len].to_vec();
+        *pos += len;
+        data
+    }
+}
+
+#[derive(Debug, Clone, Default)]
 pub struct User {
     pub id: i64,
     pub name: String,
@@ -12,14 +62,48 @@ pub struct User {
 impl User {
     pub fn serialize(&self) -> Vec<u8> {
         let mut buf = Vec::new();
-        // TODO: Call aireya_rust_core::wire::encode()
+        aireya_wire::encode_tag(&mut buf, 1, 0);
+        aireya_wire::encode_varint(&mut buf, self.id as u64);
+        aireya_wire::encode_bytes(&mut buf, 2, self.name.as_bytes());
         buf
+    }
+
+    pub fn deserialize(buf: &[u8]) -> Self {
+        let mut msg = Self::default();
+        let mut pos = 0usize;
+        while pos < buf.len() {
+            let (field_num, _wire_type) = aireya_wire::decode_tag(buf, &mut pos);
+            match field_num {
+                1 => {
+                    let v = aireya_wire::decode_varint(buf, &mut pos);
+                    msg.id = v as i64;
+                }
+                2 => {
+                    let v = aireya_wire::decode_bytes(buf, &mut pos);
+                    msg.name = String::from_utf8_lossy(&v).to_string();
+                }
+                3 => {
+                    let v = aireya_wire::decode_bytes(buf, &mut pos);
+                    msg.tags = v;
+                }
+                _ => {
+                    match _wire_type {
+                        0 => { aireya_wire::decode_varint(buf, &mut pos); }
+                        1 => { pos += 8; }
+                        2 => { let len = aireya_wire::decode_varint(buf, &mut pos) as usize; pos += len; }
+                        5 => { pos += 4; }
+                        _ => { break; }
+                    }
+                }
+            }
+        }
+        msg
     }
 }
 
 #[async_trait::async_trait]
 pub trait UserService {
-    async fn getuser(&self, req: User) -> Result<User, aireya_core::Error>;
-    async fn streamusers(&self, req: User) -> Result<User, aireya_core::Error>;
+    async fn getuser(&self, req: User) -> Result<User, Box<dyn std::error::Error>>;
+    async fn streamusers(&self, req: User) -> Result<User, Box<dyn std::error::Error>>;
 }
 

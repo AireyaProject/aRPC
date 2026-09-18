@@ -72,24 +72,28 @@ public:
     UserServiceClient(std::shared_ptr<::aireya::Connection> conn) : conn_(conn) {}
 
     int GetUser(const User& req, User* resp) {
-        (void)resp; // Suppress unused warning for skeleton
         ::aireya::Frame frame;
         frame.type = ::aireya::FrameType::REQUEST;
         frame.metadata["rpc"] = "UserService.GetUser";
         req.SerializeToArray(frame.payload);
         conn_->SendFrame(frame);
-        // TODO: Wait for response matching StreamID asynchronously
+        // Block until response frame arrives for this StreamID
+        ::aireya::Frame resp_frame = conn_->RecvFrame(frame.stream_id);
+        if (resp_frame.type == ::aireya::FrameType::ERROR) { return -1; }
+        resp->ParseFromArray(resp_frame.payload.data(), resp_frame.payload.size());
         return 0;
     }
 
     int StreamUsers(const User& req, User* resp) {
-        (void)resp; // Suppress unused warning for skeleton
         ::aireya::Frame frame;
         frame.type = ::aireya::FrameType::REQUEST;
         frame.metadata["rpc"] = "UserService.StreamUsers";
         req.SerializeToArray(frame.payload);
         conn_->SendFrame(frame);
-        // TODO: Wait for response matching StreamID asynchronously
+        // Block until response frame arrives for this StreamID
+        ::aireya::Frame resp_frame = conn_->RecvFrame(frame.stream_id);
+        if (resp_frame.type == ::aireya::FrameType::ERROR) { return -1; }
+        resp->ParseFromArray(resp_frame.payload.data(), resp_frame.payload.size());
         return 0;
     }
 
