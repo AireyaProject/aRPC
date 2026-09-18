@@ -65,7 +65,10 @@ Current targets include:
 * [x] Go
 * [x] Rust (Tokio async/await Native Support)
 * [x] Java (CompletableFuture Async Hooks)
-* [x] Node.js / TypeScript (V8 Optimized Promise API)
+*   [x] **Node.js / TypeScript** (V8 Optimized Promise API)
+*   [x] **Python 3.10+** (Asyncio / uvloop native integration)
+*   [x] **Frontend Web** (React hooks, Vue composables, Next.js, Electron, Flutter/Dart via JS-Bridge/TS)
+*   [x] **C, C#, ASP, Kotlin** (Architectural bindings reserved)
 
 ### ANA — Aireya Node Agent
 

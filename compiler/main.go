@@ -11,6 +11,8 @@ import (
 	"github.com/aireya/aireyac/generator/gen_rust"
 	"github.com/aireya/aireyac/generator/gen_java"
 	"github.com/aireya/aireyac/generator/gen_node"
+	"github.com/aireya/aireyac/generator/gen_python"
+	"github.com/aireya/aireyac/generator/gen_frontend"
 )
 
 func main() {
@@ -102,5 +104,27 @@ func main() {
 		outNodeName := inputFile + ".ts"
 		os.WriteFile(outNodeName, []byte(outNode), 0644)
 		fmt.Printf("Successfully generated %s\n", outNodeName)
+	}
+
+	// Generating Python
+	pyGen := gen_python.New(astFile)
+	outPy, err := pyGen.Generate()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error generating Python: %v\n", err)
+	} else {
+		outPyName := inputFile + ".py"
+		os.WriteFile(outPyName, []byte(outPy), 0644)
+		fmt.Printf("Successfully generated %s\n", outPyName)
+	}
+
+	// Generating Frontend Framework Adapters (React, Vue)
+	feGen := gen_frontend.New(astFile)
+	outFe, err := feGen.Generate()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error generating Frontend Adapters: %v\n", err)
+	} else {
+		outFeName := inputFile + "_hooks.ts"
+		os.WriteFile(outFeName, []byte(outFe), 0644)
+		fmt.Printf("Successfully generated %s\n", outFeName)
 	}
 }
