@@ -61,10 +61,11 @@ service UserService {
 
 Current targets include:
 
-* C++17+
-* Go
-
-Additional language support is planned.
+* [x] C++17+
+* [x] Go
+* [x] Rust (Tokio async/await Native Support)
+* [x] Java (CompletableFuture Async Hooks)
+* [x] Node.js / TypeScript (V8 Optimized Promise API)
 
 ### ANA — Aireya Node Agent
 

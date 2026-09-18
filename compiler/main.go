@@ -8,6 +8,9 @@ import (
 	"github.com/aireya/aireyac/parser"
 	"github.com/aireya/aireyac/generator/gen_cpp"
 	"github.com/aireya/aireyac/generator/gen_go"
+	"github.com/aireya/aireyac/generator/gen_rust"
+	"github.com/aireya/aireyac/generator/gen_java"
+	"github.com/aireya/aireyac/generator/gen_node"
 )
 
 func main() {
@@ -69,4 +72,35 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Printf("Successfully generated %s\n", outGoName)
+	rustGen := gen_rust.New(astFile)
+	outRust, err := rustGen.Generate()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error generating Rust: %v\n", err)
+	} else {
+		outRustName := inputFile + ".rs"
+		os.WriteFile(outRustName, []byte(outRust), 0644)
+		fmt.Printf("Successfully generated %s\n", outRustName)
+	}
+
+	// Generating Java
+	javaGen := gen_java.New(astFile)
+	outJava, err := javaGen.Generate()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error generating Java: %v\n", err)
+	} else {
+		outJavaName := inputFile + ".java"
+		os.WriteFile(outJavaName, []byte(outJava), 0644)
+		fmt.Printf("Successfully generated %s\n", outJavaName)
+	}
+
+	// Generating Node.js (TypeScript)
+	nodeGen := gen_node.New(astFile)
+	outNode, err := nodeGen.Generate()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error generating Node.js: %v\n", err)
+	} else {
+		outNodeName := inputFile + ".ts"
+		os.WriteFile(outNodeName, []byte(outNode), 0644)
+		fmt.Printf("Successfully generated %s\n", outNodeName)
+	}
 }
