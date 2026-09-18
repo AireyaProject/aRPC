@@ -1,55 +1,48 @@
-# ✨ Aireya-RPC ✨ 
+# Aireya aRPC ✨
 
-> **A Next-Generation, Ultra-Fast, and Decentralized RPC Framework 🚀**
+**Aireya aRPC (Aireya Remote Procedure Call)** is a high-performance, decentralized RPC framework designed for distributed systems, edge computing, service mesh architectures, and Web3 federation.
 
-Welcome to **Aireya-RPC**! (=^ ◡ ^=) 
-Aireya isn't just another RPC framework. It's a meticulously crafted, performance-obsessed engine designed for the future of distributed systems, Edge Computing, and Web3 Federations. 
+aRPC provides a lightweight alternative to traditional HTTP/2-based RPC frameworks such as gRPC. It combines a custom binary wire protocol, the `.aya` Interface Definition Language, automatic C++ and Go code generation, proxyless service communication, peer-to-peer service discovery, and optional Layer 7 routing.
 
-We threw away the legacy baggage of HTTP/2 and heavy reflection models to build something *blazingly fast* and *infinitely extensible*. 
+The project is designed for developers building high-performance microservices, distributed applications, edge infrastructure, decentralized networks, and low-latency backend systems.
 
----
+## Why Aireya aRPC?
 
-## 🌟 Why Aireya? (Features at a Glance)
+Traditional RPC and service mesh architectures often depend on HTTP/2, centralized control planes, or per-service sidecar proxies. Aireya aRPC explores a different architecture focused on low overhead, decentralization, and direct service-to-service communication.
 
-*   **⚡ Zero-Copy IDL & Custom Wire Format**: We built our own compiler (`aireyac`) and Interface Definition Language (`.aya`). The serialization algorithm uses a highly optimized Varint and memory-aligned memory layout that parses in nanoseconds!
-*   **🕸️ Proxyless Ambient Mesh**: Say goodbye to bloated sidecar proxies! Aireya uses a **Thin SDK** paired with the **Aireya Node Agent (ANA)** via microsecond-level local IPC (Unix Domain Sockets).
-*   **🔒 10x Crypto Suites**: Built-in support for 10 cutting-edge cryptographic suites, including Post-Quantum Cryptography (`KYBER_HYBRID`), Traffic Steganography, and rolling ephemeral keys.
-*   **🌐 P2P Federation**: Tired of centralized discovery clusters? ANA nodes gossip using **libp2p Kademlia DHT**, creating a decentralized, blockchain-like routing network. 
-*   **🦀 Rust L7 Waypoint**: For advanced L7 routing, we use a 100% Rust-based, Tokio-driven asynchronous proxy that handles millions of requests without breaking a sweat.
+Key features include:
 
----
+* High-performance binary RPC protocol
+* Custom `.aya` Interface Definition Language
+* Aireya Compiler (`aireyac`)
+* Automatic C++17+ and Go code generation
+* Proxyless RPC communication
+* Unix Domain Socket integration with Aireya Node Agent
+* Decentralized service discovery
+* libp2p and Kademlia DHT federation
+* Rust and Tokio based Layer 7 Waypoint routing
+* Edge computing support
+* Service mesh architecture without traditional sidecars
+* Streaming RPC support
+* Multiple transport and encryption strategies
+* Hybrid cryptography support
+* Designed for low-latency and high-concurrency workloads
 
-## 📊 Absolute Performance (1KB Payload Benchmark)
+## Architecture
 
-We tested Aireya against the industry's leading traditional RPC frameworks under absolutely fair, rigorously controlled conditions (10,000 concurrency, Loopback TCP, no Nagle's algorithm).
+Aireya aRPC consists of several components:
 
-**The results speak for themselves:**
+### aRPC Core
 
-| Architecture Mode | Throughput (QPS) | Tail Latency (P99) |
-| :--- | :--- | :--- |
-| **Traditional Framework A** (C++) | ~85,000 | 2.8 ms |
-| **Traditional Framework B** (C++) | ~115,000 | 1.9 ms |
-| **Aireya (Rust Waypoint Proxy)** | **~165,000** 🥈 | **1.1 ms** |
-| **Aireya (Direct Proxyless)** | **~205,000** 🏆 | **0.6 ms** |
+The core RPC runtime implements the Aireya wire protocol, request routing, serialization, transport, connection management, and runtime behavior.
 
-*(Aireya achieves this by completely bypassing HTTP/2 framing overhead and eliminating `malloc` spikes during payload decoding! 🐾)*
+### `.aya` IDL
 
----
+Aireya uses its own Interface Definition Language for defining structures and RPC services.
 
-## 🛠️ Multi-Language Ecosystem
+Example:
 
-Aireya is designed to be truly polyglot. Our compiler automatically generates ultra-fast stubs for:
-*   [x] **C++ 17+** (Zero-overhead, pure `epoll` / QUIC engine)
-*   [x] **Go 1.25+** (Goroutine optimized, native DHT integration)
-*   [ ] **Rust** (Coming soon!)
-*   [ ] **Node.js / TypeScript** (Coming soon!)
-
----
-
-## 🚀 Getting Started
-
-1. **Write your `.aya` IDL:**
-```text
+```aya
 namespace aireya.example;
 
 struct User {
@@ -62,22 +55,75 @@ service UserService {
 }
 ```
 
-2. **Compile it!**
-```bash
-cd compiler
-go run main.go ../example.aya
-# Automatically generates example.aya.h and example.aya.go!
-```
+### Aireya Compiler
 
-3. **Run the Decentralized Node Agent (ANA):**
-```bash
-cd ana
-go run main.go p2p.go
-```
+`aireyac` compiles `.aya` definitions into client and server bindings.
 
-Enjoy building the future of decentralized microservices! 🐾✨
+Current targets include:
 
----
+* C++17+
+* Go
+
+Additional language support is planned.
+
+### ANA — Aireya Node Agent
+
+ANA provides local service discovery, networking, federation, and node-level communication.
+
+Applications can communicate with ANA through Unix Domain Sockets, allowing service discovery and networking logic to remain outside the application process without requiring a traditional sidecar proxy.
+
+### Aireya Waypoint
+
+Aireya Waypoint provides optional Layer 7 routing and traffic management for workloads that require advanced routing behavior.
+
+The Waypoint implementation is based on Rust and Tokio.
+
+### Decentralized Federation
+
+Aireya aRPC can use libp2p and Kademlia DHT for decentralized node and service discovery, allowing multiple Aireya environments to participate in a federated network.
+
+## Use Cases
+
+Aireya aRPC is designed for scenarios such as:
+
+* Microservice communication
+* High-performance backend services
+* Distributed systems
+* Edge computing
+* AI infrastructure
+* Service mesh networking
+* Internal cloud infrastructure
+* P2P applications
+* Web3 infrastructure
+* Federated networks
+* Low-latency APIs
+* High-concurrency RPC services
+* IoT and distributed device networks
+
+## aRPC vs gRPC
+
+Aireya aRPC is not intended to be a drop-in replacement for gRPC.
+
+Instead, it explores an alternative RPC architecture focused on:
+
+* Reduced protocol overhead
+* Custom binary serialization
+* Direct service communication
+* Proxyless service mesh architecture
+* Decentralized discovery
+* Edge-friendly deployment
+* P2P federation
+* Independent protocol evolution
+
+Developers familiar with Protocol Buffers and gRPC should find the `.aya` IDL and service model familiar while still being able to use Aireya-specific networking features.
+
+## Project Status
+
+Aireya aRPC is under active development.
+
+APIs, protocols, wire formats, compiler behavior, and distributed networking components may change before stable releases.
+
+Feedback, testing, issues, benchmarks, protocol reviews, and contributions are welcome.
 
 ## 📜 Credits, Ownership & Licensing
 
@@ -88,3 +134,15 @@ Enjoy building the future of decentralized microservices! 🐾✨
 To protect the ecosystem while maximizing developer adoption, Aireya uses a dual-license model:
 * **The SDKs & Generated Code**: Licensed under the **[MIT License](LICENSE-SDK)**. You can freely use, integrate, and compile the Aireya client SDKs into your proprietary, closed-source commercial applications without any restrictions.
 * **The Core Engine, ANA & Waypoint**: Licensed under the **[AGPL-3.0 License](LICENSE)**. If you modify the core infrastructure or provide the Aireya network components as a managed cloud service, you must open-source your modifications.
+
+## Open Source
+
+Aireya aRPC is developed publicly by **AireyaProject**.
+
+SDK components and generated client code are designed to remain easy to integrate into external applications, while the infrastructure components are developed as open-source software.
+
+GitHub repository:
+[AireyaProject/aRPC](https://github.com/AireyaProject/aRPC)
+
+---
+*Search keywords: Aireya RPC, Aireya aRPC, aRPC, RPC framework, remote procedure call, gRPC alternative, high performance RPC, decentralized RPC, distributed systems, service mesh, proxyless service mesh, libp2p RPC, Kademlia DHT, edge computing RPC, Web3 RPC framework, C++ RPC framework, Go RPC framework, Rust service mesh, custom RPC protocol, binary RPC protocol, microservices RPC.*
